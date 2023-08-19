@@ -21,6 +21,7 @@ async function createPost() {
 
         let div = document.createElement('div')
         div.setAttribute('class', 'postConatiner postInputContainer my-3')
+        div.setAttribute('onclick', `seeUserBlogHandler('${postId}', '${author}')`)
         div.innerHTML = `<div class="d-flex justify-content-between ">
                     <div class="authorsDetails d-flex align-items-center">
                         <div class="post-header-container d-flex align-items-center">
@@ -46,6 +47,16 @@ async function createPost() {
     });
 }
 
+function seeUserBlogHandler(postId, authUid){
+    console.log(postId, authUid)
+    const postAndUser = {
+        userPostId: postId,
+        userAuthUid: authUid
+    }
+    localStorage.setItem('userBlog', JSON.stringify(postAndUser))
+    window.location.href = '../seeUser/seeUser.html'
+}
+
 async function getAuthData(id) {
     const docRef = doc(db, "users", id);
     const docSnap = await getDoc(docRef);
@@ -56,3 +67,5 @@ async function getAuthData(id) {
         console.log("No such document!");
     }
 }
+
+window.seeUserBlogHandler = seeUserBlogHandler;
