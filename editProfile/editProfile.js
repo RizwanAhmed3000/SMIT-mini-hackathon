@@ -34,7 +34,7 @@ async function getUserData(uid) {
         // phoneNumHtml.value = PhoneNumber
         loggedinUserEmail = emailAddress
         // description.value ?= description
-        loggedInUserName.innerHTML = `${firstName} ${lastName   }`
+        loggedInUserName.innerHTML = `${firstName} ${lastName}`
     } else {
         console.log("No such document!");
     }
@@ -92,37 +92,29 @@ async function editProfileHandler() {
                     // ...
 
                     case 'storage/unknown':
-                        // Unknown error occurred, inspect error.serverResponse
                         break;
                 }
             },
             () => {
-                // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                     console.log('File available at', downloadURL);
                     await setDoc(doc(db, "users", loggedinUserId), {
                         firstName: firstNameHtml.value,
                         lastName: lastNameHtml.value,
                         profilePicture: downloadURL,
-                        // PhoneNumber: phoneNumHtml.value,
                         emailAddress: loggedinUserEmail,
-                        // description: description.value
                     });
                 });
             }
         );
-        
-        // window.location.href = '../dashboard/dashboard.html'
+
     } else {
         changePassword()
         await setDoc(doc(db, "users", loggedinUserId), {
             firstName: firstNameHtml.value,
             lastName: lastNameHtml.value,
-            // PhoneNumber: phoneNumHtml.value,
             emailAddress: loggedinUserEmail,
-            // description: description.value
         });
-        // window.location.href = '../dashboard/dashboard.html'
     }
 }
 
@@ -139,41 +131,19 @@ function logoutHandler() {
     });
 }
 
-
-
-// import {
-//     auth, EmailAuthProvider, reauthenticateWithCredential, updatePassword,
-
-//     signOut,
-
-//     getAuth,
-
-
-// } from "../fireConfig.js";
-
-// const OldPassword = document.querySelector('#OldPassword');
-// const NewPassword = document.querySelector('#NewPassword');
-// const editButtonhai = document.querySelector('#editButtonhai');
-
 // Function to change the user's password
 async function changePassword() {
     const oldPassword = oldPasswordHtml.value; // Get the value of the old password input
     const newPassword = newPasswordHtml.value; // Get the value of the new password input
 
     try {
-        // Reauthenticate the user with their old password
         const user = auth.currentUser;
         const credential = EmailAuthProvider.credential(user.email, oldPassword);
         await reauthenticateWithCredential(user, credential);
-
-        // If reauthentication is successful, update the password
         await updatePassword(user, newPassword);
 
-        console.log("Password updated successfully.");
-        // location.reload()
+        alert("Password updated successfully.");
     } catch (error) {
         console.error("Error changing password:", error);
     }
 }
-
-// editButtonhai.addEventListener('click', changePassword);
