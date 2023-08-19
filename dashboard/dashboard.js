@@ -52,13 +52,19 @@ async function getUserData(uid) {
 }
 
 async function storeBlogAndCreateBlogHandler() {
-    const docRef = await addDoc(collection(db, "blogs"), {
-        BlogContent: blogTextArea.value,
-        BlogTitle: blogTitleInput.value,
-        author: loggedinUserId,
-        timestamp: serverTimestamp()
-    });
-    createPost(loggedinUserId)
+    if(blogTitleInput == `` || blogTextArea == ``){
+        alert('fill all the fields to continue')
+    } else if ((blogTitleInput.value.length < 5 || blogTitleInput.value.length > 50) || (blogTextArea.value.length < 100 || blogTextArea.value.length > 3000)) {
+        alert(`title lenght should be between 5 - 50 character and blog lenght should be between 100 - 3000 character`)
+    } else{
+        const docRef = await addDoc(collection(db, "blogs"), {
+            BlogContent: blogTextArea.value,
+            BlogTitle: blogTitleInput.value,
+            author: loggedinUserId,
+            timestamp: serverTimestamp()
+        });
+        createPost(loggedinUserId)
+    }
 }
 
 
@@ -159,33 +165,22 @@ async function editPostHandler(postId) {
 }
 
 async function deletePostHandler(postId) {
-    try {
-        await deleteDoc(doc(db, "blogs", postId));
-        alert("Your post has been deleted");
-        createPost(loggedinUserId);
-    } catch (error) {
-        console.log(error);
+    let confirmDelete = prompt('If you want to delete data type yes')
+    console.log(confirmDelete)
+    let lowerCase = confirmDelete.toLowerCase()
+    console.log(lowerCase)
+    if(lowerCase.includes('yes')){
+        try {
+            await deleteDoc(doc(db, "blogs", postId));
+            alert("Your post has been deleted");
+            createPost(loggedinUserId);
+        } catch (error) {
+            console.log(error);
+        }
+    } else{
+        return
     }
 
-}
-
-async function updatePostHandler() {
-
-
-
-    const washingtonRef = doc(db, "blogs", postIdGlobal);
-
-    // Set the "capital" field of the city 'DC'
-    await updateDoc(washingtonRef, {
-        BlogContent: blog,
-        BlogTitle: title,
-        author: loggedinUserId,
-        timestamp: serverTimestamp()
-    });
-
-    createPost(loggedinUserId)
-    publishBtn.removeEventListener('click', updatePostHandler);
-    publishBtn.addEventListener('click', storeBlogAndCreateBlogHandler);
 }
 
 

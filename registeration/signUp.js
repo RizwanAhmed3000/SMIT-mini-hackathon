@@ -53,6 +53,12 @@ function signupHandler() {
 
     if (firstName.value == "" || lastName.value == "" || emailAddress.value == "" || newPassword.value == "" || repeatPassword.value == "") {
         alert('Fill all the fields')
+    } else if ((firstName.value.length < 3) || (lastName.value.length < 1)){
+        alert('first name should be atleast 4 character & last name should be atleast 1 character')
+
+    } else if (newPassword.value != repeatPassword.value) {
+        alert('password do not match')
+
     } else {
         createUserWithEmailAndPassword(auth, emailAddress.value, newPassword.value)
             .then((userCredential) => {
